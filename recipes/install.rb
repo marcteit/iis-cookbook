@@ -4,8 +4,8 @@ powershell_script 'Install ASP.Net 4.5 Framework' do
 end
 
 powershell_script 'Install WCF HTTP' do
-  code 'Add-WindowsFeature NET-WCF-HTTP-Activation'
-  not_if "(Get-WindowsFeature NET-WCF-HTTP-Activation).Installed"
+  code 'Add-WindowsFeature NET-WCF-HTTP-Activation45'
+  not_if "(Get-WindowsFeature NET-WCF-HTTP-Activation45).Installed"
 end
 
 powershell_script 'Install WCF TCP' do
