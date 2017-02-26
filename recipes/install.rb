@@ -9,8 +9,8 @@ powershell_script 'Install WCF HTTP' do
 end
 
 powershell_script 'Install WCF TCP' do
-  code 'Add-WindowsFeature NET-WCF-TCP-Activation'
-  not_if "(Get-WindowsFeature NET-WCF-TCP-Activation).Installed"
+  code 'Add-WindowsFeature NET-WCF-TCP-Activation45'
+  not_if "(Get-WindowsFeature NET-WCF-TCP-Activation45).Installed"
 end
 
 powershell_script 'Install IIS' do
