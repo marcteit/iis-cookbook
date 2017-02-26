@@ -33,6 +33,11 @@ powershell_script 'Install Websocket' do
   not_if "(Get-WindowsFeature Web-WebSockets).Installed"
 end
 
+powershell_script 'Install Web Scripting Tools' do
+  code 'Add-WindowsFeature Web-Scripting-Tools'
+  not_if "(Get-WindowsFeature Web-Scripting-Tools).Installed"
+end
+
 service 'w3svc' do
   action [:start, :enable]
 end
