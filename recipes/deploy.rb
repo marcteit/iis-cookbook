@@ -1,3 +1,23 @@
+log 'message1' do
+  message 'A message add to the log.'
+  level :info
+end
+
+log 'message1' do
+  message "ENV: #{ENV}"
+  level :info
+end
+
+log 'message2' do
+  message node
+  level :info
+end
+
+log 'message3' do
+  message "#{node}"
+  level :info
+end
+
 powershell_script 'Create Pool' do
     code <<-EOH
         Import-Module WebAdministration
