@@ -1,25 +1,25 @@
 powershell_script 'Create Pool' do
     code <<-EOH
         Import-Module WebAdministration
-        New-Item -Path IIS:\\AppPools\\#{node['AppPoolName']}
+        New-Item -Path IIS:\\AppPools\\#{node['deploy']['environment_variables']['AppPoolName']}
     EOH
     not_if <<-EOH
         Import-Module WebAdministration
-        Test-Path IIS:\\AppPools\\#{node['AppPoolName']}
+        Test-Path IIS:\\AppPools\\#{node['deploy']['environment_variables']['AppPoolName']}
     EOH
 end
 
-directory "c:\\#{node['AppName']}" do
+directory "c:\\#{node['deploy']['environment_variables']['AppName']}" do
   action :create
   rights :read, 'Everyone'
   owner 'Administrator'
 end
 
-file "c:\\#{node['AppName']}\\index.html" do
+file "c:\\#{node['deploy']['environment_variables']['AppName']}\\index.html" do
   rights :read, 'Everyone'
   content "<html>
   <body>
-    <h1>Hello World: #{node['AppName']}</h1>
+    <h1>Hello World: #{node['deploy']['environment_variables']['AppName']}</h1>
   </body>
 </html>"
 end
@@ -27,11 +27,11 @@ end
 powershell_script 'Create App' do
     code <<-EOH
         Import-Module WebAdministration
-        New-Item -Path 'IIS:\\Sites\\Default Web Site\\#{node['AppName']}' -physicalPath c:\\#{node['AppName']} -Type Application
-        Set-ItemProperty 'IIS:\\Sites\\Default Web Site\\#{node['AppName']}' -name applicationPool -value #{node['AppPoolName']}
+        New-Item -Path 'IIS:\\Sites\\Default Web Site\\#{node['deploy']['environment_variables']['AppName']}' -physicalPath c:\\#{node['deploy']['environment_variables']['AppName']} -Type Application
+        Set-ItemProperty 'IIS:\\Sites\\Default Web Site\\#{node['deploy']['environment_variables']['AppName']}' -name applicationPool -value #{node['deploy']['environment_variables']['AppPoolName']}
     EOH
     not_if <<-EOH
         Import-Module WebAdministration
-        Test-Path 'IIS:\\Sites\Default Web Site\\#{node['AppName']}'
+        Test-Path 'IIS:\\Sites\Default Web Site\\#{node['deploy']['environment_variables']['AppName']}'
     EOH
 end
