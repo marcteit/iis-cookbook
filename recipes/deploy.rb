@@ -3,6 +3,11 @@ log 'node' do
   level :info
 end
 
+log 'full_node' do
+    message "#{Chef::JSONCompat.to_json_pretty(node.to_hash)}"
+    level :info
+end
+
 #log 'zero' do
 #  message "#{node['deploy'][0]}"
 #  level :info
