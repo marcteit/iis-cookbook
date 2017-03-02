@@ -1,5 +1,10 @@
-log 'node' do
-  message "#{node['iisexample1']}"
+log 'AppPoolName' do
+  message "#{node['AppPoolName']}"
+  level :info
+end
+
+log 'AppName' do
+  message "#{node['AppName']}"
   level :info
 end
 
