@@ -9,25 +9,25 @@ powershell_script 'Create Pool' do
     EOH
 end
 
-directory 'c:\foo' do
+directory "c:\\#{node['AppName']}" do
   action :create
   rights :read, 'Everyone'
   owner 'Administrator'
 end
 
-file 'c:\foo\index.html' do
+file "c:\\#{node['AppName']}\\index.html" do
   rights :read, 'Everyone'
-  content '<html>
+  content "<html>
   <body>
-    <h1>Hello World</h1>
+    <h1>Hello World: #{node['AppName']}</h1>
   </body>
-</html>'
+</html>"
 end
 
 powershell_script 'Create App' do
     code <<-EOH
         Import-Module WebAdministration
-        New-Item -Path 'IIS:\\Sites\\Default Web Site\\#{node['AppName']}' -physicalPath c:\\foo -Type Application
+        New-Item -Path 'IIS:\\Sites\\Default Web Site\\#{node['AppName']}' -physicalPath c:\\#{node['AppName']} -Type Application
         Set-ItemProperty 'IIS:\\Sites\\Default Web Site\\#{node['AppName']}' -name applicationPool -value #{node['AppPoolName']}
     EOH
     not_if <<-EOH
