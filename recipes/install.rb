@@ -18,6 +18,11 @@ powershell_script 'Install IIS' do
   not_if "(Get-WindowsFeature Web-Server).Installed"
 end
 
+powershell_script 'Install Static Content' do
+  code 'Add-WindowsFeature Web-Static-Content'
+  not_if "(Get-WindowsFeature Web-Static-Content).Installed"
+end
+
 powershell_script 'Install ASP.NET 4.5' do
   code 'Add-WindowsFeature Web-Asp-Net45'
   not_if "(Get-WindowsFeature Web-Asp-Net45).Installed"
@@ -36,6 +41,11 @@ end
 powershell_script 'Install Web Scripting Tools' do
   code 'Add-WindowsFeature Web-Scripting-Tools'
   not_if "(Get-WindowsFeature Web-Scripting-Tools).Installed"
+end
+
+powershell_script 'Install Web Management Console' do
+  code 'Add-WindowsFeature Web-Mgmt-Console'
+  not_if "(Get-WindowsFeature Web-Mgmt-Console).Installed"
 end
 
 service 'w3svc' do
