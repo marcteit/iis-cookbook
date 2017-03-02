@@ -8,10 +8,10 @@ log 'deploy' do
   level :info
 end
 
-log 'zero' do
-  message "#{node['deploy'][0]}"
-  level :info
-end
+#log 'zero' do
+#  message "#{node['deploy'][0]}"
+#  level :info
+#end
 
 #powershell_script 'Create Pool' do
 #    code <<-EOH
