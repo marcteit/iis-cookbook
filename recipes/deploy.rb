@@ -1,10 +1,5 @@
 log 'node' do
-  message "#{node}"
-  level :info
-end
-
-log 'deploy' do
-  message "#{node['deploy']}"
+  message "#{node['iisexample1']}"
   level :info
 end
 
