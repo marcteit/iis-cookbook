@@ -1,0 +1,91 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  OpsWorksStackName:
+    Default: Marc Stack
+    Type: String
+  ServiceRole:
+    Default: aws-opsworks-service-role
+    Description: The OpsWorks service role
+    Type: String
+    MinLength: '1'
+    MaxLength: '64'
+    AllowedPattern: "[a-zA-Z][a-zA-Z0-9-]*"
+    ConstraintDescription: must begin with a letter and contain only alphanumeric characters.
+  InstanceRole:
+    Default: aws-opsworks-ec2-role
+    Description: The OpsWorks instance role
+    Type: String
+    MinLength: '1'
+    MaxLength: '64'
+    AllowedPattern: "[a-zA-Z][a-zA-Z0-9-]*"
+    ConstraintDescription: must begin with a letter and contain only alphanumeric characters.
+  CustomCookbooksGit:
+    Default: https://github.com/marcteit/iis-cookbook.git
+    Description: Custom cookbooks GIT
+    Type: String
+  VPC:
+    Default: vpc-c1aedca4
+    Type: String
+  Subnet:
+    Default: subnet-d67720b2
+    Type: String
+Resources:
+  OpsWorksStack:
+    Type: AWS::OpsWorks::Stack
+    Properties:
+      Name:
+        Ref: OpsWorksStackName
+      ServiceRoleArn: !Sub "arn:aws:iam::${AWS::AccountId}:role/${ServiceRole}"
+      DefaultInstanceProfileArn: !Sub "arn:aws:iam::${AWS::AccountId}:instance-profile/${InstanceRole}"
+      UseCustomCookbooks: 'true'
+      CustomCookbooksSource:
+        Type: git
+        Url:
+          Ref: CustomCookbooksGit
+      VpcId:
+        Ref: VPC
+      DefaultSubnetId:
+        Ref: Subnet
+      DefaultOs: Microsoft Windows Server 2012 R2 Base
+      ConfigurationManager:
+        Name: Chef
+        Version: 12.2
+  OpsWorksLayer:
+    Type: AWS::OpsWorks::Layer
+    Properties:
+      StackId:
+        Ref: OpsWorksStack
+      Type: custom
+      Shortname: webservice
+      EnableAutoHealing: 'true'
+      AutoAssignElasticIps: 'false'
+      AutoAssignPublicIps: 'false'
+      Name: WebService
+      CustomRecipes:
+        Setup:
+        - iis-cookbook::install
+        #Deploy:
+        #- iis-cookbook::deploy
+  AppInstance1:
+    Type: AWS::OpsWorks::Instance
+    Properties:
+      StackId:
+        Ref: OpsWorksStack
+      LayerIds:
+      - Ref: OpsWorksLayer
+      InstanceType: t2.micro
+  SampleApp:
+    Type: AWS::OpsWorks::App
+    Properties:
+      StackId:
+        Ref: OpsWorksStack
+      Type: other
+      Name: SampleApp
+      AppSource:
+        Type: other
+      Attributes:
+        DocumentRoot: web
+Outputs:
+  DeployCommand:
+    Description: Deploy command
+    Value: !Sub "aws opsworks create-deployment --stack-id ${OpsWorksStack} --app-id ${SampleApp}"
