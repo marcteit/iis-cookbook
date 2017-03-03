@@ -88,4 +88,4 @@ Resources:
 Outputs:
   DeployCommand:
     Description: Deploy command
-    Value: !Sub "aws opsworks create-deployment --stack-id ${OpsWorksStack} --app-id ${SampleApp}"
+    Value: !Sub "aws --region us-east-1 opsworks create-deployment --stack-id ${OpsWorksStack} --app-id ${SampleApp}  --command \"{\\\"Name\\\":\\\"execute_recipes\\\", \\\"Args\\\":{\\\"recipes\\\":[\\\"iis-cookbook::deploy\\\"]}}\""
